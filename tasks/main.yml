@@ -23,7 +23,7 @@
       name: "{{ inventory_hostname }}"
     register: hostname
   - name: "Retrieve /tmp mount point FSType"
-    command: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $4 }'
+    shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $4 }'
     register: fstype
   - name: "Configure default mount options on /tmp mount point"
     mount:
