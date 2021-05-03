@@ -74,7 +74,7 @@
         home: "{{ service_homedir }}/{{ service_user }}"
         generate_ssh_key: yes
         ssh_key_type: ed25519
-        ssh_key_comment: "{{ user_account }}@{{ inventory_hostname }}"
+        ssh_key_comment: "{{ service_user }}@{{ inventory_hostname }}"
         state: present
       when:
         - group.state
