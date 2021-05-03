@@ -78,6 +78,7 @@
         state: present
       when:
         - group.state
+        - path.stat.exists
         - path.stat.isdir
 
       
