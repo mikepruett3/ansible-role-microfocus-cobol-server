@@ -140,8 +140,7 @@
     when: package.stat.exists != True
 
 - name: "Install Micro Focus COBOL Server"
-  file:
-    command: ./{{ package_name }} -ESadminID={{ service_user|quote }}
-    args:
-      chdir: "/root/software/"
-      #creates: ""
+  command: ./{{ package_name }} -ESadminID={{ service_user|quote }}
+  args:
+    chdir: "/root/software/"
+    #creates: ""
