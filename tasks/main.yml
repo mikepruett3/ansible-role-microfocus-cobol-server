@@ -138,9 +138,10 @@
       validate_certs: no
       mode: 0777
     when: package.stat.exists != True
-  #- name: "Change the execute permissions of the installer package"
-  #  file:
-  #    path: "/root/software/{{ package_name.split('.')[0] }}/setup_cobol_server_6.0_platform"
-  #    owner: root
-  #    group: root
-  #    mode: 0777
+
+- name: "Install Micro Focus COBOL Server"
+  file:
+    command: ./{{ package_name }} -ESadminID={{ service_user|quote }}
+    args:
+      chdir: "/root/software/"
+      #creates: ""
