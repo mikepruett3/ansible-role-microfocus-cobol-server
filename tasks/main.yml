@@ -156,7 +156,7 @@
       url: "{{ software_url }}/{{ package_name }}"
       dest: "/root/software/"
       validate_certs: no
-      mode: 0777
+      #mode: 0777
     when: package.stat.exists != True
   - name: "Install Java Development Kit version 11, if not already installed"
     package:
