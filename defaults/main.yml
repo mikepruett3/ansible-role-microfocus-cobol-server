@@ -3,5 +3,8 @@ service_homedir: "/data/user"
 service_group: "service-group"
 service_user: "service-user"
 
-software_url: "http://www.example.org"
-package_name: "setup_cobol_server"
+micro_focus_software_url: "http://www.example.org"
+micro_focus_package_name: "setup_cobol_server"
+
+java_software_url: "http://www.example.org"
+java_package_name: "jdk-11_linux-x64_bin.rpm"

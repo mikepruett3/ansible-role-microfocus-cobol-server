@@ -68,15 +68,12 @@
         - "item|string not in ansible_facts.packages"
         - ansible_os_family == 'RedHat'
         - ansible_distribution_major_version == '8'
-    - name: "Install Java Development Kit version 11, if not already installed"
-      package:
-        name: 'java-11-openjdk'
-        #Oracle's JDK package = 'jdk-11.0.11'
-        state: present
-      when:
-        - "'java-11-openjdk' not in ansible_facts.packages"
-        # for Oracle's JDK package, uncomment the later & comment the prior
-        #- "'jdk-11.0.11' not in ansible_facts.packages"
+    #- name: "Install Java Development Kit version 11, if not already installed"
+    #  package:
+    #    name: 'jdk-11.0.11'
+    #    state: present
+    #  when:
+    #    - "'jdk-11.0.11' not in ansible_facts.packages"
 
 - name: "Setup Service Account"
   block:
@@ -120,6 +117,10 @@
 
 - name: "Download and Unarchive Micro Focus COBOL Server package"
   block:
+  - name: "Set Facts for Java Development Kit installer package"
+    set_fact:
+      software_url: "{{ micro_focus_software_url }}"
+      package_name: "{{ micro_focus_package_name }}"
   - name: "Create software directory under root homedir, if it does not exist"
     file:
       path: "/root/software/"
@@ -135,6 +136,34 @@
       validate_certs: no
       mode: 0777
     when: package.stat.exists != True
+
+- name: "Download & Install Java Development Kit version 11 package"
+  block:
+  - name: "Set Facts for Java Development Kit installer package"
+    set_fact:
+      software_url: "{{ java_software_url }}"
+      package_name: "{{ java_package_name }}"
+  - name: "Create software directory under root homedir, if it does not exist"
+    file:
+      path: "/root/software/"
+      state: directory
+  - name: "Check if installer package already exist"
+    stat:
+      path: "/root/software/{{ package_name }}"
+    register: package
+  - name: "Download installer package from local repository"
+    get_url:
+      url: "{{ software_url }}/{{ package_name }}"
+      dest: "/root/software/"
+      validate_certs: no
+      mode: 0777
+    when: package.stat.exists != True
+  - name: "Install Java Development Kit version 11, if not already installed"
+    package:
+      name: "/root/software/{{ package_name }}"
+      state: present
+    when:
+      - "'jdk-11.0.11' not in ansible_facts.packages"
 
 - name: "Install Micro Focus COBOL Server"
   command: ./{{ package_name }} -ESadminID={{ service_user|quote }} -IacceptEULA -noplatformcheck
