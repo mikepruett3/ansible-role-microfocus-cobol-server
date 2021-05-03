@@ -7,11 +7,23 @@
     manager: auto
   when: ansible_facts.packages is not defined
 
-- name: "Install pax, if not already installed"
+- name: "Install pax, if not already installed (RHEL7)"
   package:
     name: 'pax'
     state: present
-  when: "'pax' in ansible_facts.packages"
+  when:
+    - "'pax' not in ansible_facts.packages"
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version <= '7'
+
+- name: "Install pax, if not already installed (RHEL8)"
+  package:
+    name: 'spax'
+    state: present
+  when:
+    - "'spax' not in ansible_facts.packages"
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '8'
 
 - name: "Disable SELinux"
   selinux:
