@@ -7,23 +7,24 @@
     manager: auto
   when: ansible_facts.packages is not defined
 
-- name: "Install pax, if not already installed (RHEL7)"
-  package:
-    name: 'pax'
-    state: present
-  when:
-    - "'pax' not in ansible_facts.packages"
-    - ansible_os_family == 'RedHat'
-    - ansible_distribution_major_version <= '7'
-
-- name: "Install pax, if not already installed (RHEL8)"
-  package:
-    name: 'spax'
-    state: present
-  when:
-    - "'spax' not in ansible_facts.packages"
-    - ansible_os_family == 'RedHat'
-    - ansible_distribution_major_version == '8'
+- name: "Install pax package"
+  block:
+    - name: "Install pax, if not already installed (RHEL7)"
+      package:
+        name: 'pax'
+        state: present
+      when:
+        - "'pax' not in ansible_facts.packages"
+        - ansible_os_family == 'RedHat'
+        - ansible_distribution_major_version <= '7'
+    - name: "Install pax, if not already installed (RHEL8)"
+      package:
+        name: 'spax'
+        state: present
+      when:
+        - "'spax' not in ansible_facts.packages"
+        - ansible_os_family == 'RedHat'
+        - ansible_distribution_major_version == '8'
 
 - name: "Disable SELinux"
   selinux:
@@ -33,3 +34,21 @@
 - name: "Reboot host, after disabling SELinux"
   reboot:
   when: reboot.reboot_required
+
+- name: "Install required library packages"
+  block:
+    - name: "Install required libraries, if not already installed (RHEL8)"
+      package:
+        name: "{{ item }}"
+        state: present
+      when:
+        - "item|string not in ansible_facts.packages"
+        - ansible_os_family == 'RedHat'
+        - ansible_distribution_major_version == '8'
+      with_items:
+        - glibc.i686
+        - libgcc.i686
+        - libstdc++.i686
+        - glibc-devel.i686
+
+#- name: ""
