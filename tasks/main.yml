@@ -68,12 +68,6 @@
         - "item|string not in ansible_facts.packages"
         - ansible_os_family == 'RedHat'
         - ansible_distribution_major_version == '8'
-    #- name: "Install Java Development Kit version 11, if not already installed"
-    #  package:
-    #    name: 'jdk-11.0.11'
-    #    state: present
-    #  when:
-    #    - "'jdk-11.0.11' not in ansible_facts.packages"
 
 - name: "Setup Service Account"
   block:
@@ -121,21 +115,8 @@
     set_fact:
       software_url: "{{ micro_focus_software_url }}"
       package_name: "{{ micro_focus_package_name }}"
-  - name: "Create software directory under root homedir, if it does not exist"
-    file:
-      path: "/root/software/"
-      state: directory
-  - name: "Check if installer package already exist"
-    stat:
-      path: "/root/software/{{ package_name }}"
-    register: package
-  - name: "Download installer package from local repository"
-    get_url:
-      url: "{{ software_url }}/{{ package_name }}"
-      dest: "/root/software/"
-      validate_certs: no
-      mode: 0777
-    when: package.stat.exists != True
+  - name: "Download installer package"
+    include_tasks: download.yml
 
 - name: "Download & Install Java Development Kit version 11 package"
   block:
@@ -145,21 +126,6 @@
       package_name: "{{ java_package_name }}"
   - name: "Download installer package"
     include_tasks: download.yml
-  #- name: "Create software directory under root homedir, if it does not exist"
-  #  file:
-  #    path: "/root/software/"
-  #    state: directory
-  #- name: "Check if installer package already exist"
-  #  stat:
-  #    path: "/root/software/{{ package_name }}"
-  #  register: package
-  #- name: "Download installer package from local repository"
-  #  get_url:
-  #    url: "{{ software_url }}/{{ package_name }}"
-  #    dest: "/root/software/"
-  #    validate_certs: no
-  #    #mode: 0777
-  #  when: package.stat.exists != True
   - name: "Install Java Development Kit version 11, if not already installed"
     package:
       name: "/root/software/{{ package_name }}"
