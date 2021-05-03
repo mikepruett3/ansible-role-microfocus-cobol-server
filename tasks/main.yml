@@ -22,6 +22,15 @@
     ansible.builtin.hostname:
       name: "{{ inventory_hostname }}"
     register: hostname
+  - name: "Retrieve /tmp mount point FSType"
+    command: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $4 }'
+    register: fstype
+  - name: "Configure default mount options on /tmp mount point"
+    mount:
+      path: /tmp
+      opts: 'defaults'
+      fstype: "{{ fstype.stdout|string }}"
+      state: mounted
   - name: "Reboot host"
     reboot:
     when: reboot.reboot_required or hostname.changed
@@ -66,11 +75,6 @@
 
 - name: "Setup Service Account"
   block:
-    #- name: "Install Korn Shell, if not already installed"
-    #  package:
-    #    name: 'ksh'
-    #    state: present
-    #  when: "'ksh' not in ansible_facts.packages"
     - name: "Check for service users homedir existence"
       stat:
         path: "{{ service_homedir }}"
