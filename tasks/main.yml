@@ -22,12 +22,16 @@
     ansible.builtin.hostname:
       name: "{{ inventory_hostname }}"
     register: hostname
+  - name: "Retrieve /tmp mount point Source"
+    shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $2 }'
+    register: src
   - name: "Retrieve /tmp mount point FSType"
     shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $4 }'
     register: fstype
   - name: "Configure default mount options on /tmp mount point"
     mount:
       path: /tmp
+      src: "{{ src.stdout|string }}"
       opts: 'defaults'
       fstype: "{{ fstype.stdout|string }}"
       state: mounted
