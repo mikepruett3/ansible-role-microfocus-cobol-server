@@ -82,19 +82,23 @@
         - path.stat.isdir
 
 - name: "Create required directories in the service users homedir"
-  block:
-    - name: "Create data & udata directories"
-      file:
-        path: "{{ service_homedir }}/{{ service_user }}/{{ item }}"
-        owner: "{{ service_user }}"
-        group: "{{ service_group }}"
-        state: directory
-      with_items:
-        - "data"
-        - "data/tmp"
-        - "udata"
-        - "udata/tmp"
-      when:
-        - path.stat.exists
-        - path.stat.isdir
-      
+  file:
+    path: "{{ service_homedir }}/{{ service_user }}/{{ item }}"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    state: directory
+  with_items:
+    - "data"
+    - "data/tmp"
+    - "udata"
+    - "udata/tmp"
+  when:
+    - path.stat.exists
+    - path.stat.isdir
+
+- name: "Check if Java Development Kit version 11 is installed"
+  package:
+    name: 'jdk-11.0.11'
+    state: present
+  when:
+    - "'jdk-11.0.11' not in ansible_facts.packages"
