@@ -129,7 +129,7 @@
       state: directory
   - name: "Download installer package from local repository"
     get_url:
-      src: "{{ software_url }}/{{ package_name }}"
+      url: "{{ software_url }}/{{ package_name }}"
       dest: "/root/software/"
       validate_certs: no
       mode: 0777
