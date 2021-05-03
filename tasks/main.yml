@@ -96,7 +96,7 @@
     - path.stat.exists
     - path.stat.isdir
 
-- name: "Check if Java Development Kit version 11 is installed"
+- name: "Install Java Development Kit version 11, if not already installed"
   package:
     name: 'java-11-openjdk'
     #Oracle's JDK package = 'jdk-11.0.11'
@@ -105,3 +105,9 @@
     - "'java-11-openjdk' not in ansible_facts.packages"
     # for Oracle's JDK package, uncomment the later & comment the prior
     #- "'jdk-11.0.11' not in ansible_facts.packages"
+
+- name: "Add hosts entry for local host IP address"
+  lineinfile:
+    path: /etc/hosts
+    insertafter: EOF
+    line: "{{ ansible_default_ipv4.address }} {{ inventory_hostname }}  {{ inventory_hostname.split('.')[0] }}"
