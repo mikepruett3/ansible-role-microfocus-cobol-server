@@ -1,7 +1,4 @@
 ---
-- name: "Include OS-specific variables"
-  include_vars: "{{ ansible_os_family }}.yml"
-
 - name: "Gather the package facts"
   ansible.builtin.package_facts:
     manager: auto
@@ -143,4 +140,4 @@
   command: ./{{ package_name }} -ESadminID={{ service_user|quote }} -IacceptEULA -noplatformcheck
   args:
     chdir: "/root/software/"
-    #creates: ""
+    creates: "/opt/microfocus/VisualCOBOL/bin/cob64"

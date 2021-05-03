@@ -4,4 +4,4 @@ service_group: "service-group"
 service_user: "service-user"
 
 software_url: "http://www.example.org"
-package_name: "rapid7-agent-installer.zip"
+package_name: "setup_cobol_server"
