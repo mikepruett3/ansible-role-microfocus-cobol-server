@@ -1,3 +1,4 @@
 ---
+service_homedir: "/data/user/"
 service_group: "service-group"
 service_user: "service-user"

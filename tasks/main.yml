@@ -58,22 +58,26 @@
         name: 'ksh'
         state: present
       when: "'ksh' not in ansible_facts.packages"
-    #- name: "Check for service users group existence"
-    #  command: getent group {{ service_group }}
-    #  register: group
-    #  ignore_errors: true
+    - name: "Check for service users homedir existence"
+      stat:
+        path: "{{ service_homedir }}"
+      register: path
     - name: "Create service users group, if not already created"
       ansible.builtin.group:
         name: "{{ service_group }}"
         state: present
-      #when: register.stdout == ""
-    - name: "Check for service user existence"
-      command: getent passwd {{ service_user }}
-      register: user
-      ignore_errors: true
-    #- name: "Create service user, if not already created"
-    #  ansible.builtin.user:
-    #    name: "{{ service_user }}"
-    #    group: "{{ service_group }}"
+      register: group
+    - name: "Create service user, if not already created"
+      ansible.builtin.user:
+        name: "{{ service_user }}"
+        group: "{{ service_group }}"
+        home: "{{ service_homedir }}"
+        generate_ssh_key: yes
+        ssh_key_type: ed25519
+        ssh_key_comment: "{{ user_account }}@{{ inventory_hostname }}"
+        state: present
+      when:
+        - group.state
+        - path.stat.exists
 
       
