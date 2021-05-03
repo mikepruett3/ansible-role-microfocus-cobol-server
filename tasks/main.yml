@@ -26,7 +26,7 @@
     shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $2 }'
     register: src
   - name: "Retrieve /tmp mount point FSType"
-    shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $4 }'
+    shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $3 }'
     register: fstype
   - name: "Configure default mount options on /tmp mount point"
     mount:
