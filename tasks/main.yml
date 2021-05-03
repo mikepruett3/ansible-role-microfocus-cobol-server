@@ -1,2 +1,21 @@
 ---
-# tasks file for ansible-role-mf-cobol-server/
+- name: "Include OS-specific variables"
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: "Gather the package facts"
+  ansible.builtin.package_facts:
+    manager: auto
+  when: ansible_facts.packages is not defined
+
+- name: "Install pax, if not already installed"
+  package:
+    name: 'pax'
+    state: present
+  when: "'pax' in ansible_facts.packages"
+
+- name: "Disable SELinux"
+  selinux:
+    state: disabled
+
+- name: "Reboot host, after disabling SELinux"
+  reboot:
