@@ -28,6 +28,8 @@
 - name: "Disable SELinux"
   selinux:
     state: disabled
+  register: reboot
 
 - name: "Reboot host, after disabling SELinux"
   reboot:
+  when: reboot.reboot_required
