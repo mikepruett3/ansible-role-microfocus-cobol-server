@@ -98,7 +98,10 @@
 
 - name: "Check if Java Development Kit version 11 is installed"
   package:
-    name: 'jdk-11.0.11'
+    name: 'java-11-openjdk'
+    #Oracle's JDK package = 'jdk-11.0.11'
     state: present
   when:
-    - "'jdk-11.0.11' not in ansible_facts.packages"
+    - "'java-11-openjdk' not in ansible_facts.packages"
+    # for Oracle's JDK package, uncomment the later & comment the prior
+    #- "'jdk-11.0.11' not in ansible_facts.packages"
