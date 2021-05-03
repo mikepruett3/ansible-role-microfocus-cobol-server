@@ -28,6 +28,9 @@
   - name: "Retrieve /tmp mount point FSType"
     shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $3 }'
     register: fstype
+  - name: "Retrieve /tmp mount point Options"
+    shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $4 }'
+    register: opts
   - name: "Configure default mount options on /tmp mount point"
     mount:
       path: /tmp
@@ -35,6 +38,7 @@
       fstype: "{{ fstype.stdout|string }}"
       opts: defaults
       state: mounted
+    when: opts.stdout != "defaults"
   - name: "Reboot host"
     reboot:
     when: reboot.reboot_required or hostname.changed
