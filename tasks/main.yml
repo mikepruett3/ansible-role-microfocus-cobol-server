@@ -106,8 +106,17 @@
     # for Oracle's JDK package, uncomment the later & comment the prior
     #- "'jdk-11.0.11' not in ansible_facts.packages"
 
-- name: "Add hosts entry for local host IP address"
-  lineinfile:
-    path: /etc/hosts
-    insertafter: EOF
-    line: "{{ ansible_default_ipv4.address }} {{ inventory_hostname }}  {{ inventory_hostname.split('.')[0] }}"
+- name: "Hostname Changes"
+  block:
+  - name: "Add hosts entry for local host IP address"
+    lineinfile:
+      path: /etc/hosts
+      insertafter: EOF
+      line: "{{ ansible_default_ipv4.address }} {{ inventory_hostname }}  {{ inventory_hostname.split('.')[0] }}"
+  - name: "Set systems Hostname"
+    ansible.builtin.hostname:
+      name: "{{ inventory_hostname }}"
+    register: hostname
+  - name: "Reboot host, after changing Hostname"
+    reboot:
+    when: hostname.changed
