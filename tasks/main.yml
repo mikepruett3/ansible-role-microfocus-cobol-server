@@ -54,10 +54,11 @@
 - name: "Setup Service Account"
   block:
     - name: "Check for groups existence"
-      ansible.builtin.group:
-        name: "{{ service_group }}"
-        local: yes
-        #state: present
+      command: getent group {{ service_group }}
       register: group
     #- name: "Create group, if not already created"
+    #  ansible.builtin.group:
+    #    name: "{{ service_group }}"
+    #    state: present
+    #  when: register:
       
