@@ -68,7 +68,7 @@
         state: present
       #when: register.stdout == ""
     - name: "Check for service user existence"
-      command: getent user {{ service_user }}
+      command: getent passwd {{ service_user }}
       register: user
       ignore_errors: true
     #- name: "Create service user, if not already created"
