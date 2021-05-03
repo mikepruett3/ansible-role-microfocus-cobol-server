@@ -34,7 +34,7 @@
       src: "{{ src.stdout|string }}"
       fstype: "{{ fstype.stdout|string }}"
       opts: defaults
-      state: remounted
+      state: mounted
   - name: "Reboot host"
     reboot:
     when: reboot.reboot_required or hostname.changed
