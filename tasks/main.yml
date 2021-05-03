@@ -137,7 +137,7 @@
       dest: "/root/software/"
       validate_certs: no
       mode: 0777
-    when: package.stat.exists
+    when: package.stat.exists != True
   #- name: "Change the execute permissions of the installer package"
   #  file:
   #    path: "/root/software/{{ package_name.split('.')[0] }}/setup_cobol_server_6.0_platform"
