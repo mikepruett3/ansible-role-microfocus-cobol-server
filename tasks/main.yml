@@ -81,4 +81,17 @@
         - path.stat.exists
         - path.stat.isdir
 
+- name: "Create required directories in the service users homedir"
+  block:
+    - name: "Create data & udata directories"
+      file:
+        path: "{{ service_homedir }}/{{ service_user }}/{{ item }}"
+      with_items:
+        - "data"
+        - "data/tmp"
+        - "udata"
+        - "udata/tmp"
+      when:
+        - path.stat.exists
+        - path.stat.isdir
       
