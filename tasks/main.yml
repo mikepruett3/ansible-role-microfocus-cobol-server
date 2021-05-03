@@ -53,13 +53,27 @@
 
 - name: "Setup Service Account"
   block:
-    - name: "Check for groups existence"
-      command: getent group {{ service_group }}
-      register: group
+    - name: "Install Korn Shell, if not already installed"
+      package:
+        name: 'ksh'
+        state: present
+      when: "'ksh' not in ansible_facts.packages"
+    #- name: "Check for service users group existence"
+    #  command: getent group {{ service_group }}
+    #  register: group
+    #  ignore_errors: true
+    - name: "Create service users group, if not already created"
+      ansible.builtin.group:
+        name: "{{ service_group }}"
+        state: present
+      #when: register.stdout == ""
+    - name: "Check for service user existence"
+      command: getent user {{ service_user }}
+      register: user
       ignore_errors: true
-    #- name: "Create group, if not already created"
-    #  ansible.builtin.group:
-    #    name: "{{ service_group }}"
-    #    state: present
-    #  when: register:
+    #- name: "Create service user, if not already created"
+    #  ansible.builtin.user:
+    #    name: "{{ service_user }}"
+    #    group: "{{ service_group }}"
+
       
