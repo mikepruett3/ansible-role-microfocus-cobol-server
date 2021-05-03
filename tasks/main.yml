@@ -51,4 +51,13 @@
         - libstdc++.i686
         - glibc-devel.i686
 
-#- name: ""
+- name: "Setup Service Account"
+  block:
+    - name: "Check for groups existence"
+      ansible.builtin.group:
+        name: "{{ service_group }}"
+        local: yes
+        state: present
+      register: group
+    #- name: "Create group, if not already created"
+      
