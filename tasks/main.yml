@@ -86,6 +86,8 @@
     - name: "Create data & udata directories"
       file:
         path: "{{ service_homedir }}/{{ service_user }}/{{ item }}"
+        owner: "{{ service_user }}"
+        group: "{{ service_group }}"
         state: directory
       with_items:
         - "data"
