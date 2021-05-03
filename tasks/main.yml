@@ -57,7 +57,7 @@
       ansible.builtin.group:
         name: "{{ service_group }}"
         local: yes
-        state: present
+        #state: present
       register: group
     #- name: "Create group, if not already created"
       
