@@ -55,6 +55,7 @@
   block:
     - name: "Check for groups existence"
       command: getent group {{ service_group }}
+      ignore_error: true
       register: group
     #- name: "Create group, if not already created"
     #  ansible.builtin.group:
