@@ -32,8 +32,8 @@
     mount:
       path: /tmp
       src: "{{ src.stdout|string }}"
-      opts: 'defaults'
       fstype: "{{ fstype.stdout|string }}"
+      opts: defaults
       state: remounted
   - name: "Reboot host"
     reboot:
