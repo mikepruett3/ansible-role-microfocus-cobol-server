@@ -120,3 +120,22 @@
   when:
     - path.stat.exists
     - path.stat.isdir
+
+- name: "Download and Unarchive Micro Focus COBOL Server package"
+  block:
+  - name: "Create software directory under root homedir, if it does not exist"
+    file:
+      path: "/root/software/{{ package_name.split('.')[0] }}/"
+      state: directory
+  - name: "Download installer package from local repository"
+    get_url:
+      src: "{{ software_url }}/{{ package_name }}"
+      dest: "/root/software/"
+      validate_certs: no
+      mode: 0777
+  #- name: "Change the execute permissions of the installer package"
+  #  file:
+  #    path: "/root/software/{{ package_name.split('.')[0] }}/setup_cobol_server_6.0_platform"
+  #    owner: root
+  #    group: root
+  #    mode: 0777
