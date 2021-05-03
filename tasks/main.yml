@@ -127,12 +127,17 @@
     file:
       path: "/root/software/"
       state: directory
+  - name: "Check if installer package already exist"
+    stat:
+      path: "/root/software/{{ package_name }}"
+    register: package
   - name: "Download installer package from local repository"
     get_url:
       url: "{{ software_url }}/{{ package_name }}"
       dest: "/root/software/"
       validate_certs: no
       mode: 0777
+    when: package.stat.exists
   #- name: "Change the execute permissions of the installer package"
   #  file:
   #    path: "/root/software/{{ package_name.split('.')[0] }}/setup_cobol_server_6.0_platform"
