@@ -111,7 +111,7 @@
 
 - name: "Download and Unarchive Micro Focus COBOL Server package"
   block:
-  - name: "Set Facts for Java Development Kit installer package"
+  - name: "Set Facts for Micro Focus COBOL installer package"
     set_fact:
       software_url: "{{ micro_focus_software_url }}"
       package_name: "{{ micro_focus_package_name }}"
