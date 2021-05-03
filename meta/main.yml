@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: mikepruett3
-  description: Ansible role to install MicroFocus Cobol Server on Linux servers.
+  description: Ansible role to install Micro Focus Cobol Server on Linux servers.
   company: "First American Payment Systems"
   license: "license (MIT)"
   min_ansible_version: 2.9
@@ -12,5 +12,6 @@ galaxy_info:
      - 8
   galaxy_tags: 
     - mf
+    - microfocus
     - cobol
     - install
