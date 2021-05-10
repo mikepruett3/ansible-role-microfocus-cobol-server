@@ -79,14 +79,14 @@
 
 - name: "Setup Service Account"
   block:
-    - name: "Check for service users homedir"
+    - name: "Collect stats for service users homedir"
       stat:
         path: "{{ service_homedir }}"
       register: path
     - name: "Test service users homedir existence"
       fail:
-        msg: "Path {{ service_homedir }} on {{ inventory_hostname }} does not exists!"
-      when: not path.stat.exists
+        msg: "Path {{ service_homedir }} does not exist on {{ inventory_hostname }}!"
+      when: not path.stat.exists or not path.stat.isdir
     - name: "Create service users group"
       group:
         name: "{{ service_group }}"
@@ -100,8 +100,6 @@
         ssh_key_type: ed25519
         ssh_key_comment: "{{ service_user }}@{{ inventory_hostname }}"
         state: present
-      when:
-        - path.stat.isdir
 
 - name: "Create required directories in the service users homedir"
   file:
