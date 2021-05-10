@@ -86,9 +86,7 @@
     - name: "Test service users homedir existence"
       fail:
         msg: "Path {{ service_homedir }} on {{ inventory_hostname }} does not exists!"
-      when:
-        - path.stat.exists is false
-        - path.stat.isdir is false
+      when: not path.stat.exists
     - name: "Create service users group"
       group:
         name: "{{ service_group }}"
@@ -102,6 +100,8 @@
         ssh_key_type: ed25519
         ssh_key_comment: "{{ service_user }}@{{ inventory_hostname }}"
         state: present
+      when:
+        - path.stat.isdir
 
 - name: "Create required directories in the service users homedir"
   file:
