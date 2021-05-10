@@ -52,9 +52,13 @@
         - flex
         - flex-devel
         - flex-devel.i686
+        - glibc
         - glibc.i686
+        - libgcc
         - libgcc.i686
+        - libstdc++
         - libstdc++.i686
+        - glibc-devel
         - glibc-devel.i686
       when:
         - "item|string not in ansible_facts.packages"
@@ -111,9 +115,6 @@
         - "data/tmp"
         - "udata"
         - "udata/tmp"
-      #when:
-      #  - path.stat.exists
-      #  - path.stat.isdir
 
 #- name: "Download & Install Java Development Kit version 11 package"
 #  block:
