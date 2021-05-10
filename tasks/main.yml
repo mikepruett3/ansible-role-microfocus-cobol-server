@@ -87,8 +87,8 @@
       fail:
         msg: "Path {{ service_homedir }} on {{ inventory_hostname }} does not exists!"
       when:
-        - not path.stat.exists
-        - not path.stat.isdir
+        - path.stat.exists is false
+        - path.stat.isdir is false
     - name: "Create service users group"
       group:
         name: "{{ service_group }}"
