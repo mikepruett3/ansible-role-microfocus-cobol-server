@@ -50,6 +50,12 @@
         - pax
         - ksh
         - flex
+        - flex-devel
+        - flex-devel.i686
+        - glibc.i686
+        - libgcc.i686
+        - libstdc++.i686
+        - glibc-devel.i686
       when:
         - "item|string not in ansible_facts.packages"
         - ansible_os_family == 'RedHat'
@@ -111,31 +117,45 @@
     - path.stat.exists
     - path.stat.isdir
 
-- name: "Download & Install Java Development Kit version 11 package"
-  block:
-  - name: "Set Facts for Java Development Kit installer package"
-    set_fact:
-      software_url: "{{ java_software_url }}"
-      package_name: "{{ java_package_name }}"
-  - name: "Download installer package"
-    include_tasks: download.yml
-  - name: "Install Java Development Kit version 11, if not already installed"
-    package:
-      name: "/root/software/{{ package_name }}"
-      state: present
-    when:
-      - "'jdk-11.0.11' not in ansible_facts.packages"
+#- name: "Download & Install Java Development Kit version 11 package"
+#  block:
+#  - name: "Set Facts for Java Development Kit installer package"
+#    set_fact:
+#      software_url: "{{ java_software_url }}"
+#      package_name: "{{ java_package_name }}"
+#  - name: "Download installer package"
+#    include_tasks: download.yml
+#  - name: "Install Java Development Kit version 11, if not already installed"
+#    package:
+#      name: "/root/software/{{ package_name }}"
+#      state: present
+#    when:
+#      - "'jdk-11.0.11' not in ansible_facts.packages"
 
-- name: "Download and Unarchive Micro Focus COBOL Server package"
-  block:
-  - name: "Set Facts for Micro Focus COBOL installer package"
-    set_fact:
-      software_url: "{{ micro_focus_software_url }}"
-      package_name: "{{ micro_focus_package_name }}"
-  - name: "Download installer package"
-    include_tasks: download.yml
+- name: "Create software directory under root homedir, if it does not exist"
+  file:
+    path: "/root/software/"
+    state: directory
 
-- name: "Install Micro Focus COBOL Server"
+#- name: "Check if installer package already exist"
+#  stat:
+#    path: "/root/software/{{ package_name }}"
+#  register: package
+
+- name: "Download installer package from local repository"
+  get_url:
+    url: "{{ software_url }}/{{ package_name }}"
+    dest: "/root/software/{{ package_name }}"
+    validate_certs: no
+    mode: 0777
+  #when: package.stat.exists != True
+
+- name: "Test if Oracle Java Development Kit (JDK) installed"
+  fail:
+    msg: "Oracle Java Development Kit (JDK) not installed!"
+  when: '"jdk-*" not in ansible_facts.packages'
+
+- name: "Install Micro Focus COBOL Server, if not already installed"
   command: ./{{ package_name }} -ESadminID={{ service_user|quote }} -IacceptEULA -noplatformcheck
   args:
     chdir: "/root/software/"
