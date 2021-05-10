@@ -100,21 +100,20 @@
         ssh_key_type: ed25519
         ssh_key_comment: "{{ service_user }}@{{ inventory_hostname }}"
         state: present
-
-- name: "Create required directories in the service users homedir"
-  file:
-    path: "{{ service_homedir }}/{{ service_user }}/{{ item }}"
-    owner: "{{ service_user }}"
-    group: "{{ service_group }}"
-    state: directory
-  with_items:
-    - "data"
-    - "data/tmp"
-    - "udata"
-    - "udata/tmp"
-  when:
-    - path.stat.exists
-    - path.stat.isdir
+    - name: "Create required directories in the service users homedir"
+      file:
+        path: "{{ service_homedir }}/{{ service_user }}/{{ item }}"
+        owner: "{{ service_user }}"
+        group: "{{ service_group }}"
+        state: directory
+      with_items:
+        - "data"
+        - "data/tmp"
+        - "udata"
+        - "udata/tmp"
+      #when:
+      #  - path.stat.exists
+      #  - path.stat.isdir
 
 #- name: "Download & Install Java Development Kit version 11 package"
 #  block:
