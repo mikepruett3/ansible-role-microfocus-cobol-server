@@ -101,7 +101,7 @@
         group: "{{ service_group }}"
         home: "{{ service_homedir }}/{{ service_user }}"
         generate_ssh_key: yes
-        ssh_key_type: ed25519
+        ssh_key_type: "{{ ssh_key_type }}"
         ssh_key_comment: "{{ service_user }}@{{ inventory_hostname }}"
         state: present
     - name: "Create required directories in the service users homedir"
