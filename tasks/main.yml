@@ -152,7 +152,7 @@
 - name: "Test if Oracle Java Development Kit (JDK) installed"
   fail:
     msg: "Oracle Java Development Kit (JDK) not installed!"
-  when: '"jdk-*" not in ansible_facts.packages'
+  when: '"jdk" not in ansible_facts.packages'
 
 - name: "Install Micro Focus COBOL Server, if not already installed"
   command: ./{{ package_name }} -ESadminID={{ service_user|quote }} -IacceptEULA -noplatformcheck
