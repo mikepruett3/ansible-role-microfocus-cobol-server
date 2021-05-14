@@ -13,7 +13,7 @@ Role Variables
 
 Available variables are listed below, along with default values ```(see defaults/main.yml)```:
 
-```
+``` yaml
 service_user: "service-user"
 service_group: "service-group"
 service_homedir: "/data/user"
@@ -44,6 +44,7 @@ Oracle-JDK is required for the software package. (OpenJDK not offically supporte
 Example Playbook
 ----------------
 
+``` yaml
     - hosts: servers
       roles:
          - role: mikepruett3.microfocus-cobol-server
@@ -54,6 +55,7 @@ Example Playbook
              ssh_key_type: "ed25519"
              software_url: "http://www.example.org"
              package_name: "setup_cobol_server"
+```
 
 License
 -------
