@@ -139,14 +139,14 @@
   when: yum_list.results | selectattr("yumstate", "match", "installed") | list | length == 0
 
 - name: "Install Micro Focus COBOL Server (CentOS)"
-  ansible.builtin.command: ./{{ package_name }} -ESadminID={{ service_user|quote }} -IacceptEULA -noplatformcheck
+  command: ./{{ package_name }} -ESadminID={{ service_user|quote }} -IacceptEULA -noplatformcheck
   args:
     chdir: "/root/software/"
     creates: "/opt/microfocus/VisualCOBOL/bin/cob64"
   when: ansible_distribution == 'CentOS'
 
 - name: "Install Micro Focus COBOL Server (RHEL)"
-  ansible.builtin.command: ./{{ package_name }} -ESadminID={{ service_user|quote }} -IacceptEULA
+  command: ./{{ package_name }} -ESadminID={{ service_user|quote }} -IacceptEULA
   args:
     chdir: "/root/software/"
     creates: "/opt/microfocus/VisualCOBOL/bin/cob64"
