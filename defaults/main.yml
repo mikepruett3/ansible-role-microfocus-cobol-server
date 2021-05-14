@@ -1,8 +1,7 @@
 ---
-service_homedir: "/data/user"
-service_group: "service-group"
 service_user: "service-user"
+service_group: "service-group"
+service_homedir: "/data/user"
 ssh_key_type: "ed25519"
-
 software_url: "http://www.example.org"
 package_name: "setup_cobol_server"
