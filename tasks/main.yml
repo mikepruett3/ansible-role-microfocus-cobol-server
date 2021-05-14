@@ -20,7 +20,9 @@
         name: "{{ inventory_hostname }}"
       register: hostname
     - name: "Retrieve /tmp mount point Source"
-      ansible.builtin.shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $2 }'
+      ansible.builtin.shell:
+      args:
+        cmd: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $2 }'
       register: src
     - name: "Retrieve /tmp mount point FSType"
       ansible.builtin.shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $3 }'
