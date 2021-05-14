@@ -7,11 +7,11 @@
 - name: "Host Setup/Changes"
   block:
   - name: "Disable SELinux"
-    selinux:
+    ansible.posix.selinux:
       state: disabled
     register: reboot
   - name: "Add hosts entry for local host IP address"
-    lineinfile:
+    ansible.builtin.lineinfile:
       path: /etc/hosts
       insertafter: EOF
       line: "{{ ansible_default_ipv4.address }} {{ inventory_hostname }}  {{ inventory_hostname.split('.')[0] }}"
@@ -20,16 +20,16 @@
       name: "{{ inventory_hostname }}"
     register: hostname
   - name: "Retrieve /tmp mount point Source"
-    shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $2 }'
+    ansible.builtin.shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $2 }'
     register: src
   - name: "Retrieve /tmp mount point FSType"
-    shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $3 }'
+    ansible.builtin.shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $3 }'
     register: fstype
   - name: "Retrieve /tmp mount point Options"
-    shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $4 }'
+    ansible.builtin.shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $4 }'
     register: opts
   - name: "Configure default mount options on /tmp mount point"
-    mount:
+    ansible.posix.mount:
       path: /tmp
       src: "{{ src.stdout|string }}"
       fstype: "{{ fstype.stdout|string }}"
@@ -37,13 +37,13 @@
       state: mounted
     when: opts.stdout != "defaults"
   - name: "Reboot host"
-    reboot:
+    ansible.builtin.reboot:
     when: reboot.reboot_required or hostname.changed
 
 - name: "Install required packages"
   block:
     - name: "Install required packages, if not already installed (RHEL7)"
-      package:
+      ansible.builtin.package:
         name: "{{ item }}"
         state: present
       with_items:
@@ -65,7 +65,7 @@
         - ansible_os_family == 'RedHat'
         - ansible_distribution_major_version <= '7'
     - name: "Install required packages, if not already installed (RHEL8)"
-      package:
+      ansible.builtin.package:
         name: "{{ item }}"
         state: present
       with_items:
@@ -84,19 +84,19 @@
 - name: "Setup Service Account"
   block:
     - name: "Collect stats for service users homedir"
-      stat:
+      ansible.builtin.stat:
         path: "{{ service_homedir }}"
       register: path
     - name: "Test service users homedir existence"
-      fail:
+      ansible.builtin.fail:
         msg: "Path {{ service_homedir }} does not exist on {{ inventory_hostname }}!"
       when: not path.stat.exists or not path.stat.isdir
     - name: "Create service users group"
-      group:
+      ansible.builtin.group:
         name: "{{ service_group }}"
         state: present
     - name: "Create service user"
-      user:
+      ansible.builtin.user:
         name: "{{ service_user }}"
         group: "{{ service_group }}"
         home: "{{ service_homedir }}/{{ service_user }}"
@@ -105,7 +105,7 @@
         ssh_key_comment: "{{ service_user }}@{{ inventory_hostname }}"
         state: present
     - name: "Create required directories in the service users homedir"
-      file:
+      ansible.builtin.file:
         path: "{{ service_homedir }}/{{ service_user }}/{{ item }}"
         owner: "{{ service_user }}"
         group: "{{ service_group }}"
@@ -117,36 +117,36 @@
         - "udata/tmp"
 
 - name: "Create software directory under root homedir, if it does not exist"
-  file:
+  ansible.builtin.file:
     path: "/root/software/"
     state: directory
 
 - name: "Download installer package from local repository"
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ software_url }}/{{ package_name }}"
     dest: "/root/software/{{ package_name }}"
     validate_certs: no
     mode: 0777
 
 - name: "Collect package inventory from yum"
-  package:
+  ansible.builtin.package:
     list: "jdk"
   register: yum_list
 
 - name: "Test if Oracle Java Development Kit (JDK) installed"
-  fail:
+  ansible.builtin.fail:
     msg: "Oracle Java Development Kit (JDK) not installed!"
   when: yum_list.results | selectattr("yumstate", "match", "installed") | list | length == 0
 
 - name: "Install Micro Focus COBOL Server (CentOS)"
-  command: ./{{ package_name }} -ESadminID={{ service_user|quote }} -IacceptEULA -noplatformcheck
+  ansible.builtin.command: ./{{ package_name }} -ESadminID={{ service_user|quote }} -IacceptEULA -noplatformcheck
   args:
     chdir: "/root/software/"
     creates: "/opt/microfocus/VisualCOBOL/bin/cob64"
   when: ansible_distribution == 'CentOS'
 
 - name: "Install Micro Focus COBOL Server (RHEL)"
-  command: ./{{ package_name }} -ESadminID={{ service_user|quote }} -IacceptEULA
+  ansible.builtin.command: ./{{ package_name }} -ESadminID={{ service_user|quote }} -IacceptEULA
   args:
     chdir: "/root/software/"
     creates: "/opt/microfocus/VisualCOBOL/bin/cob64"
