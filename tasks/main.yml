@@ -7,7 +7,7 @@
 - name: "Host Setup/Changes"
   block:
     - name: "Disable SELinux"
-      ansible.posix.selinux:
+      selinux:
         state: disabled
       register: reboot
     - name: "Add hosts entry for local host IP address"
@@ -29,7 +29,7 @@
       ansible.builtin.shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $4 }'
       register: opts
     - name: "Configure default mount options on /tmp mount point"
-      ansible.posix.mount:
+      mount:
         path: /tmp
         src: "{{ src.stdout|string }}"
         fstype: "{{ fstype.stdout|string }}"
