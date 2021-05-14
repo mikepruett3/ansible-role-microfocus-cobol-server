@@ -6,39 +6,39 @@
 
 - name: "Host Setup/Changes"
   block:
-  - name: "Disable SELinux"
-    ansible.posix.selinux:
-      state: disabled
-    register: reboot
-  - name: "Add hosts entry for local host IP address"
-    ansible.builtin.lineinfile:
-      path: /etc/hosts
-      insertafter: EOF
-      line: "{{ ansible_default_ipv4.address }} {{ inventory_hostname }}  {{ inventory_hostname.split('.')[0] }}"
-  - name: "Set systems Hostname"
-    ansible.builtin.hostname:
-      name: "{{ inventory_hostname }}"
-    register: hostname
-  - name: "Retrieve /tmp mount point Source"
-    ansible.builtin.shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $2 }'
-    register: src
-  - name: "Retrieve /tmp mount point FSType"
-    ansible.builtin.shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $3 }'
-    register: fstype
-  - name: "Retrieve /tmp mount point Options"
-    ansible.builtin.shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $4 }'
-    register: opts
-  - name: "Configure default mount options on /tmp mount point"
-    ansible.posix.mount:
-      path: /tmp
-      src: "{{ src.stdout|string }}"
-      fstype: "{{ fstype.stdout|string }}"
-      opts: defaults
-      state: mounted
-    when: opts.stdout != "defaults"
-  - name: "Reboot host"
-    ansible.builtin.reboot:
-    when: reboot.reboot_required or hostname.changed
+    - name: "Disable SELinux"
+      ansible.posix.selinux:
+        state: disabled
+      register: reboot
+    - name: "Add hosts entry for local host IP address"
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        insertafter: EOF
+        line: "{{ ansible_default_ipv4.address }} {{ inventory_hostname }}  {{ inventory_hostname.split('.')[0] }}"
+    - name: "Set systems Hostname"
+      ansible.builtin.hostname:
+        name: "{{ inventory_hostname }}"
+      register: hostname
+    - name: "Retrieve /tmp mount point Source"
+      ansible.builtin.shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $2 }'
+      register: src
+    - name: "Retrieve /tmp mount point FSType"
+      ansible.builtin.shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $3 }'
+      register: fstype
+    - name: "Retrieve /tmp mount point Options"
+      ansible.builtin.shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $4 }'
+      register: opts
+    - name: "Configure default mount options on /tmp mount point"
+      ansible.posix.mount:
+        path: /tmp
+        src: "{{ src.stdout|string }}"
+        fstype: "{{ fstype.stdout|string }}"
+        opts: defaults
+        state: mounted
+      when: opts.stdout != "defaults"
+    - name: "Reboot host"
+      ansible.builtin.reboot:
+      when: reboot.reboot_required or hostname.changed
 
 - name: "Install required packages"
   block:
