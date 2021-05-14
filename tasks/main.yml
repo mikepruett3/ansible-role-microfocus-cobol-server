@@ -160,8 +160,16 @@
   when: yum_list.results | selectattr("yumstate", "match", "installed") | list | length == 0
   #when: '"jdk*" not in ansible_facts.packages'
 
-- name: "Install Micro Focus COBOL Server, if not already installed"
+- name: "Install Micro Focus COBOL Server, if not already installed (CentOS)"
   command: ./{{ package_name }} -ESadminID={{ service_user|quote }} -IacceptEULA -noplatformcheck
   args:
     chdir: "/root/software/"
     creates: "/opt/microfocus/VisualCOBOL/bin/cob64"
+  when: ansible_distribution == 'CentOS'
+
+- name: "Install Micro Focus COBOL Server, if not already installed (RHEL)"
+  command: ./{{ package_name }} -ESadminID={{ service_user|quote }} -IacceptEULA
+  args:
+    chdir: "/root/software/"
+    creates: "/opt/microfocus/VisualCOBOL/bin/cob64"
+  when: ansible_distribution == 'RedHat'
