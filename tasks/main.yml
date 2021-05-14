@@ -116,30 +116,10 @@
         - "udata"
         - "udata/tmp"
 
-#- name: "Download & Install Java Development Kit version 11 package"
-#  block:
-#  - name: "Set Facts for Java Development Kit installer package"
-#    set_fact:
-#      software_url: "{{ java_software_url }}"
-#      package_name: "{{ java_package_name }}"
-#  - name: "Download installer package"
-#    include_tasks: download.yml
-#  - name: "Install Java Development Kit version 11, if not already installed"
-#    package:
-#      name: "/root/software/{{ package_name }}"
-#      state: present
-#    when:
-#      - "'jdk-11.0.11' not in ansible_facts.packages"
-
 - name: "Create software directory under root homedir, if it does not exist"
   file:
     path: "/root/software/"
     state: directory
-
-#- name: "Check if installer package already exist"
-#  stat:
-#    path: "/root/software/{{ package_name }}"
-#  register: package
 
 - name: "Download installer package from local repository"
   get_url:
@@ -147,7 +127,6 @@
     dest: "/root/software/{{ package_name }}"
     validate_certs: no
     mode: 0777
-  #when: package.stat.exists != True
 
 - name: "Collect package inventory from yum"
   package:
@@ -158,7 +137,6 @@
   fail:
     msg: "Oracle Java Development Kit (JDK) not installed!"
   when: yum_list.results | selectattr("yumstate", "match", "installed") | list | length == 0
-  #when: '"jdk*" not in ansible_facts.packages'
 
 - name: "Install Micro Focus COBOL Server, if not already installed (CentOS)"
   command: ./{{ package_name }} -ESadminID={{ service_user|quote }} -IacceptEULA -noplatformcheck
