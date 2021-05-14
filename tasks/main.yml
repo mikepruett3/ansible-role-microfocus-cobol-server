@@ -20,13 +20,13 @@
         name: "{{ inventory_hostname }}"
       register: hostname
     - name: "Retrieve /tmp mount point Source"
-      command: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $2 }'
+      shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $2 }'
       register: src
     - name: "Retrieve /tmp mount point FSType"
-      command: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $3 }'
+      shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $3 }'
       register: fstype
     - name: "Retrieve /tmp mount point Options"
-      command: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $4 }'
+      shell: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $4 }'
       register: opts
     - name: "Configure default mount options on /tmp mount point"
       mount:
