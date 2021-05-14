@@ -21,17 +21,14 @@
       register: hostname
     - name: "Retrieve /tmp mount point Source"
       ansible.builtin.shell:
-      args:
         cmd: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $2 }'
       register: src
     - name: "Retrieve /tmp mount point FSType"
       ansible.builtin.shell:
-      args:
         cmd: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $3 }'
       register: fstype
     - name: "Retrieve /tmp mount point Options"
       ansible.builtin.shell:
-      args:
         cmd: findmnt --fstab --target '/tmp' | tail -n 1 | awk '{ print $4 }'
       register: opts
     - name: "Configure default mount options on /tmp mount point"
